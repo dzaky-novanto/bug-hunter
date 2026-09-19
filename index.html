@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Bug Hunter: Dev Survivor</title>
+  <meta name="description" content="Arcade Survivor game untuk para developer! Lawan Bug, 404 Error, Memory Leak, dan selamatkan Friday 5PM Production Outage!" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%230d1117'/%3E%3Ctext x='50' y='62' text-anchor='middle' font-family='monospace' font-weight='700' font-size='42' fill='%2339d353'%3EBH%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+
+  <div id="game-wrapper">
+    <div id="xp-bar-container">
+      <div id="xp-bar-fill"></div>
+    </div>
+
+    <!-- Top bar with MENU button (visible during play) -->
+    <div id="topbar">
+      <button id="btn-top-menu" class="btn-topbar hidden" title="Kembali ke Menu (ESC)">MENU</button>
+      <div class="topbar-spacer"></div>
+      <button id="btn-top-pause" class="btn-topbar hidden" title="Pause (P)">PAUSE</button>
+    </div>
+
+    <!-- HUD Overlay -->
+    <div id="hud" class="hidden">
+      <div class="hud-left">
+        <div class="hud-panel">
+          <span class="hud-label">HP</span>
+          <div id="hp-bar-outer">
+            <div id="hp-bar-fill"></div>
+          </div>
+          <span id="hp-bar-text">100 / 100</span>
+        </div>
+        <div class="hud-panel mono" id="hud-level">Lv.1</div>
+      </div>
+
+      <div class="hud-center">
+        <div class="hud-panel mono">
+          <span class="hud-label">TIME</span>
+          <span id="hud-timer">00:00</span>
+        </div>
+        <div class="hud-panel combo hidden" id="hud-combo">
+          <span class="hud-label">COMBO</span>
+          <span id="combo-count">0x</span>
+        </div>
+      </div>
+
+      <div class="hud-right">
+        <div class="hud-panel mono">
+          <span class="hud-label">KILL</span>
+          <span id="hud-kills">0</span>
+        </div>
+        <div id="hud-inventory"></div>
+      </div>
+    </div>
+
+    <canvas id="game-canvas"></canvas>
+
+    <!-- Start Menu Screen -->
+    <div id="menu-start" class="modal-backdrop">
+      <div class="menu-inner">
+        <p class="eyebrow">ARCADE SURVIVOR // DEV EDITION</p>
+        <h1 class="game-title">BUG HUNTER: DEV SURVIVOR</h1>
+        <p class="game-subtitle">Bantai ribuan Bug, 404 Error, Memory Leak, dan lolos dari Friday 5PM Production Outage.</p>
+
+        <div class="char-select-title">PILIH KARAKTER DEVELOPER</div>
+        <div id="char-cards"></div>
+
+        <div class="controls-hint">
+          <span>Kontrol: <strong>WASD / Arrow Keys</strong></span>
+          <span>Mobile: <strong>Virtual Joystick</strong></span>
+          <span>Pause: <strong>P / ESC</strong></span>
+        </div>
+
+        <div class="menu-actions">
+          <button id="btn-start-game" class="btn-primary">MULAI RUN BARU</button>
+          <button id="btn-view-achievements" class="btn-secondary">Achievements</button>
+          <button id="btn-toggle-sound" class="btn-secondary">SFX On</button>
+          <button id="btn-toggle-bgm" class="btn-secondary">BGM On</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Level Up Modal -->
+    <div id="modal-levelup" class="modal-backdrop hidden">
+      <h2 class="modal-title">LEVEL UP -- COMMIT MERGED</h2>
+      <p class="modal-subtitle">Pilih 1 upgrade untuk memperkuat stack arsitektur kodemu:</p>
+      <div id="levelup-cards"></div>
+      <p class="modal-hint">Tekan 1 / 2 / 3 atau klik kartu</p>
+    </div>
+
+    <!-- Pause Modal -->
+    <div id="modal-pause" class="modal-backdrop hidden">
+      <div class="modal-card">
+        <h2 class="modal-title">GAME DI-PAUSE</h2>
+        <p class="modal-subtitle">Sedang break sejenak. Kopi aman.</p>
+        <div class="menu-actions" style="margin-top: 18px; justify-content:center; flex-wrap:wrap;">
+          <button id="btn-resume" class="btn-primary">Lanjutkan</button>
+          <button id="btn-restart-pause" class="btn-secondary">Restart Run</button>
+          <button id="btn-menu-from-pause" class="btn-ghost">Kembali ke Menu Utama</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Game Over Modal -->
+    <div id="modal-gameover" class="modal-backdrop hidden">
+      <div class="gameover-box">
+        <div class="gameover-title">SERVER CRASHED</div>
+        <p style="color: var(--text-muted); margin-bottom: 20px;">Unhandled exception -- codebase overload. Deploy gagal.</p>
+
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="stat-label">Waktu Bertahan</div>
+            <div class="stat-val" id="stat-time">00:00</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Bugs Dibasmi</div>
+            <div class="stat-val" id="stat-kills">0</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Level Developer</div>
+            <div class="stat-val" id="stat-level">Lv.1</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Total Damage</div>
+            <div class="stat-val" id="stat-damage">0</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-label">Max Combo</div>
+            <div class="stat-val" id="stat-combo">0x</div>
+          </div>
+          <div class="stat-item highscore-row">
+            <div class="stat-label">Rekor Terbaik (High Score)</div>
+            <div class="stat-val" id="stat-highscore">00:00 (0 bugs)</div>
+          </div>
+        </div>
+
+        <div class="menu-actions" style="justify-content: center; flex-wrap:wrap;">
+          <button id="btn-restart" class="btn-primary">COBA LAGI</button>
+          <button id="btn-menu-from-gameover" class="btn-ghost">Menu Utama</button>
+          <button id="btn-share-score" class="btn-secondary">Share Skor</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Achievements Modal -->
+    <div id="modal-achievements" class="modal-backdrop hidden">
+      <div class="achievements-box">
+        <h2 class="modal-title" style="text-align: center;">DEV ACHIEVEMENTS</h2>
+        <div id="achievements-list"></div>
+        <div style="margin-top: 20px; text-align: center;">
+          <button id="btn-close-achievements" class="btn-secondary">Tutup</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="toast-container"></div>
+  </div>
+
+  <div id="game-footer">
+    <span>Berikan Star di GitHub</span>
+    <span class="dot">-</span>
+    <span>Zero Dependencies HTML5 &amp; Web Audio</span>
+    <span class="dot">-</span>
+    <a href="#" id="footer-menu-link">Menu Utama</a>
+  </div>
+
+  <script src="audio.js"></script>
+  <script type="module" src="main.js"></script>
+</body>
+</html>
