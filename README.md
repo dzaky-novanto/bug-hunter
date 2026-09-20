@@ -51,18 +51,6 @@ python -m http.server 8000
 
 > ESC keluar dari fullscreen (aturan browser) — tekan `F` atau tombol FULL untuk masuk lagi.
 
-## Deploy ke GitHub Pages (biar rame!)
-
-```bash
-git init
-git add .
-git commit -m "feat: bug hunter survivor 32 weapons + coop"
-git branch -M main
-git remote add origin https://github.com/<username>/bug-hunter-survivor.git
-git push -u origin main
-# Settings > Pages > Deploy from branch > main / root > Save
-# Live di https://<username>.github.io/bug-hunter-survivor/
-```
 
 ## Struktur File
 
