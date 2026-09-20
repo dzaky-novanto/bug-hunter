@@ -13,10 +13,22 @@ class SoundManager {
     this.bgmStep = 0;
     this.bgmPlaying = false;
 
+    // Volume settings (0.0 - 1.0), default = "normal" levels used before this feature existed
+    this.masterVolume = 0.6;
+    this.sfxVolume = 0.7;
+    this.bgmVolume = 0.25;
+    this.DEFAULTS = { master: 0.6, sfx: 0.7, bgm: 0.25 };
+
     // Load sound settings from localStorage
     try {
       this.muted = localStorage.getItem('bhs_muted') === 'true';
       this.bgmMuted = localStorage.getItem('bhs_bgm_muted') === 'true';
+      const savedMaster = localStorage.getItem('bhs_vol_master');
+      const savedSfx = localStorage.getItem('bhs_vol_sfx');
+      const savedBgm = localStorage.getItem('bhs_vol_bgm');
+      if (savedMaster !== null) this.masterVolume = parseFloat(savedMaster);
+      if (savedSfx !== null) this.sfxVolume = parseFloat(savedSfx);
+      if (savedBgm !== null) this.bgmVolume = parseFloat(savedBgm);
     } catch(e) {}
   }
 
@@ -27,15 +39,15 @@ class SoundManager {
     this.ctx = new AudioContext();
 
     this.masterGain = this.ctx.createGain();
-    this.masterGain.gain.setValueAtTime(this.muted ? 0 : 0.6, this.ctx.currentTime);
+    this.masterGain.gain.setValueAtTime(this.muted ? 0 : this.masterVolume, this.ctx.currentTime);
     this.masterGain.connect(this.ctx.destination);
 
     this.sfxGain = this.ctx.createGain();
-    this.sfxGain.gain.setValueAtTime(0.7, this.ctx.currentTime);
+    this.sfxGain.gain.setValueAtTime(this.sfxVolume, this.ctx.currentTime);
     this.sfxGain.connect(this.masterGain);
 
     this.bgmGain = this.ctx.createGain();
-    this.bgmGain.gain.setValueAtTime(this.bgmMuted ? 0 : 0.25, this.ctx.currentTime);
+    this.bgmGain.gain.setValueAtTime(this.bgmMuted ? 0 : this.bgmVolume, this.ctx.currentTime);
     this.bgmGain.connect(this.masterGain);
   }
 
@@ -46,11 +58,51 @@ class SoundManager {
     }
   }
 
+  // ---------- Volume controls (Custom Sound Settings feature) ----------
+  setMasterVolume(v) {
+    this.masterVolume = Math.max(0, Math.min(1, v));
+    this.muted = this.masterVolume <= 0;
+    try {
+      localStorage.setItem('bhs_vol_master', this.masterVolume);
+      localStorage.setItem('bhs_muted', this.muted);
+    } catch(e) {}
+    if (this.masterGain && this.ctx) {
+      this.masterGain.gain.setValueAtTime(this.muted ? 0 : this.masterVolume, this.ctx.currentTime);
+    }
+  }
+
+  setSfxVolume(v) {
+    this.sfxVolume = Math.max(0, Math.min(1, v));
+    try { localStorage.setItem('bhs_vol_sfx', this.sfxVolume); } catch(e) {}
+    if (this.sfxGain && this.ctx) {
+      this.sfxGain.gain.setValueAtTime(this.sfxVolume, this.ctx.currentTime);
+    }
+  }
+
+  setBgmVolume(v) {
+    this.bgmVolume = Math.max(0, Math.min(1, v));
+    this.bgmMuted = this.bgmVolume <= 0;
+    try {
+      localStorage.setItem('bhs_vol_bgm', this.bgmVolume);
+      localStorage.setItem('bhs_bgm_muted', this.bgmMuted);
+    } catch(e) {}
+    if (this.bgmGain && this.ctx) {
+      this.bgmGain.gain.setValueAtTime(this.bgmMuted ? 0 : this.bgmVolume, this.ctx.currentTime);
+    }
+    if (!this.bgmMuted && !this.bgmPlaying) this.startBgm();
+  }
+
+  resetVolumes() {
+    this.setMasterVolume(this.DEFAULTS.master);
+    this.setSfxVolume(this.DEFAULTS.sfx);
+    this.setBgmVolume(this.DEFAULTS.bgm);
+  }
+
   toggleMute() {
     this.muted = !this.muted;
     try { localStorage.setItem('bhs_muted', this.muted); } catch(e) {}
     if (this.masterGain && this.ctx) {
-      this.masterGain.gain.setValueAtTime(this.muted ? 0 : 0.6, this.ctx.currentTime);
+      this.masterGain.gain.setValueAtTime(this.muted ? 0 : this.masterVolume, this.ctx.currentTime);
     }
     return this.muted;
   }
@@ -59,7 +111,7 @@ class SoundManager {
     this.bgmMuted = !this.bgmMuted;
     try { localStorage.setItem('bhs_bgm_muted', this.bgmMuted); } catch(e) {}
     if (this.bgmGain && this.ctx) {
-      this.bgmGain.gain.setValueAtTime(this.bgmMuted ? 0 : 0.25, this.ctx.currentTime);
+      this.bgmGain.gain.setValueAtTime(this.bgmMuted ? 0 : this.bgmVolume, this.ctx.currentTime);
     }
     if (!this.bgmMuted && !this.bgmPlaying) {
       this.startBgm();
@@ -216,6 +268,31 @@ class SoundManager {
 
       osc.start(start);
       osc.stop(start + 0.25);
+    });
+  }
+
+  // Weapon Merge fanfare
+  playMerge() {
+    if (this.muted || !this.ctx) return;
+    this.ensureContext();
+    const t = this.ctx.currentTime;
+    const notes = [261.63, 329.63, 392, 523.25, 659.25, 783.99, 1046.50];
+    notes.forEach((freq, idx) => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      const start = t + idx * 0.06;
+
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(freq, start);
+
+      gain.gain.setValueAtTime(0.25, start);
+      gain.gain.exponentialRampToValueAtTime(0.001, start + 0.4);
+
+      osc.connect(gain);
+      gain.connect(this.sfxGain);
+
+      osc.start(start);
+      osc.stop(start + 0.4);
     });
   }
 

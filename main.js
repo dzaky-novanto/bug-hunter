@@ -6,8 +6,6 @@ import { UIManager } from './ui.js';
 
 window.addEventListener('DOMContentLoaded', () => {
   const canvas = document.getElementById('game-canvas');
-  
-  // High DPI canvas setup
   canvas.width = CANVAS_WIDTH;
   canvas.height = CANVAS_HEIGHT;
 
@@ -15,21 +13,31 @@ window.addEventListener('DOMContentLoaded', () => {
   const game = new Game(canvas, uiManager);
   uiManager.setGame(game);
 
-  // Focus canvas on click
+  // Audio unlock
   canvas.addEventListener('click', () => {
-    if (window.soundManager) {
-      window.soundManager.ensureContext();
-    }
+    if (window.soundManager) window.soundManager.ensureContext();
   });
+  document.body.addEventListener('touchstart', () => {
+    if (window.soundManager) window.soundManager.ensureContext();
+  }, { once: true, passive: true });
 
-  // Responsive scaling inside wrapper
-  function resizeCanvas() {
-    const wrapper = document.getElementById('game-wrapper');
-    const width = wrapper.clientWidth;
-    const height = wrapper.clientHeight;
-    // Canvas CSS handles scaling while maintaining internal 1280x720 coordinates
+  // ============ ORIENTATION DETECTION ============
+  const orientationLock = document.getElementById('orientation-lock');
+
+  function checkOrientation() {
+    const isPortrait = window.innerHeight > window.innerWidth;
+    const isSmallScreen = Math.min(window.innerWidth, window.innerHeight) < 820;
+    const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    // Tampilkan overlay HANYA di HP portrait
+    const showLock = isPortrait && isSmallScreen && isTouch;
+    if (orientationLock) {
+      orientationLock.classList.toggle('active', showLock);
+    }
   }
 
-  window.addEventListener('resize', resizeCanvas);
-  resizeCanvas();
+  checkOrientation();
+  window.addEventListener('resize', checkOrientation);
+  window.addEventListener('orientationchange', () => {
+    setTimeout(checkOrientation, 120);
+  });
 });

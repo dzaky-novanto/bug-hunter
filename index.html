@@ -10,160 +10,326 @@
 </head>
 <body>
 
-  <div id="game-wrapper">
-    <div id="xp-bar-container">
-      <div id="xp-bar-fill"></div>
-    </div>
-
-    <!-- Top bar with MENU button (visible during play) -->
-    <div id="topbar">
-      <button id="btn-top-menu" class="btn-topbar hidden" title="Kembali ke Menu (ESC)">MENU</button>
-      <div class="topbar-spacer"></div>
-      <button id="btn-top-pause" class="btn-topbar hidden" title="Pause (P)">PAUSE</button>
-    </div>
-
-    <!-- HUD Overlay -->
-    <div id="hud" class="hidden">
-      <div class="hud-left">
-        <div class="hud-panel">
-          <span class="hud-label">HP</span>
-          <div id="hp-bar-outer">
-            <div id="hp-bar-fill"></div>
-          </div>
-          <span id="hp-bar-text">100 / 100</span>
-        </div>
-        <div class="hud-panel mono" id="hud-level">Lv.1</div>
+  <!-- Orientation Prompt (muncul saat HP di portrait) -->
+  <div id="orientation-lock">
+    <div class="orient-card">
+      <svg viewBox="0 0 64 64" width="72" height="72" fill="none" stroke="currentColor" stroke-width="2.5">
+        <rect x="18" y="6" width="28" height="52" rx="6"/>
+        <line x1="28" y1="52" x2="36" y2="52" stroke-linecap="round"/>
+      </svg>
+      <div class="orient-arrow">
+        <svg viewBox="0 0 48 24" width="48" height="24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M4 12 Q24 2 44 12" stroke-dasharray="4 4"/>
+          <path d="M44 12 L38 8 M44 12 L38 16" stroke-linecap="round"/>
+        </svg>
       </div>
-
-      <div class="hud-center">
-        <div class="hud-panel mono">
-          <span class="hud-label">TIME</span>
-          <span id="hud-timer">00:00</span>
-        </div>
-        <div class="hud-panel combo hidden" id="hud-combo">
-          <span class="hud-label">COMBO</span>
-          <span id="combo-count">0x</span>
-        </div>
-      </div>
-
-      <div class="hud-right">
-        <div class="hud-panel mono">
-          <span class="hud-label">KILL</span>
-          <span id="hud-kills">0</span>
-        </div>
-        <div id="hud-inventory"></div>
-      </div>
+      <h2>Putar ke Landscape</h2>
+      <p>Bug Hunter paling seru dalam mode landscape</p>
     </div>
-
-    <canvas id="game-canvas"></canvas>
-
-    <!-- Start Menu Screen -->
-    <div id="menu-start" class="modal-backdrop">
-      <div class="menu-inner">
-        <p class="eyebrow">ARCADE SURVIVOR // DEV EDITION</p>
-        <h1 class="game-title">BUG HUNTER: DEV SURVIVOR</h1>
-        <p class="game-subtitle">Bantai ribuan Bug, 404 Error, Memory Leak, dan lolos dari Friday 5PM Production Outage.</p>
-
-        <div class="char-select-title">PILIH KARAKTER DEVELOPER</div>
-        <div id="char-cards"></div>
-
-        <div class="controls-hint">
-          <span>Kontrol: <strong>WASD / Arrow Keys</strong></span>
-          <span>Mobile: <strong>Virtual Joystick</strong></span>
-          <span>Pause: <strong>P / ESC</strong></span>
-        </div>
-
-        <div class="menu-actions">
-          <button id="btn-start-game" class="btn-primary">MULAI RUN BARU</button>
-          <button id="btn-view-achievements" class="btn-secondary">Achievements</button>
-          <button id="btn-toggle-sound" class="btn-secondary">SFX On</button>
-          <button id="btn-toggle-bgm" class="btn-secondary">BGM On</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Level Up Modal -->
-    <div id="modal-levelup" class="modal-backdrop hidden">
-      <h2 class="modal-title">LEVEL UP -- COMMIT MERGED</h2>
-      <p class="modal-subtitle">Pilih 1 upgrade untuk memperkuat stack arsitektur kodemu:</p>
-      <div id="levelup-cards"></div>
-      <p class="modal-hint">Tekan 1 / 2 / 3 atau klik kartu</p>
-    </div>
-
-    <!-- Pause Modal -->
-    <div id="modal-pause" class="modal-backdrop hidden">
-      <div class="modal-card">
-        <h2 class="modal-title">GAME DI-PAUSE</h2>
-        <p class="modal-subtitle">Sedang break sejenak. Kopi aman.</p>
-        <div class="menu-actions" style="margin-top: 18px; justify-content:center; flex-wrap:wrap;">
-          <button id="btn-resume" class="btn-primary">Lanjutkan</button>
-          <button id="btn-restart-pause" class="btn-secondary">Restart Run</button>
-          <button id="btn-menu-from-pause" class="btn-ghost">Kembali ke Menu Utama</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Game Over Modal -->
-    <div id="modal-gameover" class="modal-backdrop hidden">
-      <div class="gameover-box">
-        <div class="gameover-title">SERVER CRASHED</div>
-        <p style="color: var(--text-muted); margin-bottom: 20px;">Unhandled exception -- codebase overload. Deploy gagal.</p>
-
-        <div class="stats-grid">
-          <div class="stat-item">
-            <div class="stat-label">Waktu Bertahan</div>
-            <div class="stat-val" id="stat-time">00:00</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-label">Bugs Dibasmi</div>
-            <div class="stat-val" id="stat-kills">0</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-label">Level Developer</div>
-            <div class="stat-val" id="stat-level">Lv.1</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-label">Total Damage</div>
-            <div class="stat-val" id="stat-damage">0</div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-label">Max Combo</div>
-            <div class="stat-val" id="stat-combo">0x</div>
-          </div>
-          <div class="stat-item highscore-row">
-            <div class="stat-label">Rekor Terbaik (High Score)</div>
-            <div class="stat-val" id="stat-highscore">00:00 (0 bugs)</div>
-          </div>
-        </div>
-
-        <div class="menu-actions" style="justify-content: center; flex-wrap:wrap;">
-          <button id="btn-restart" class="btn-primary">COBA LAGI</button>
-          <button id="btn-menu-from-gameover" class="btn-ghost">Menu Utama</button>
-          <button id="btn-share-score" class="btn-secondary">Share Skor</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Achievements Modal -->
-    <div id="modal-achievements" class="modal-backdrop hidden">
-      <div class="achievements-box">
-        <h2 class="modal-title" style="text-align: center;">DEV ACHIEVEMENTS</h2>
-        <div id="achievements-list"></div>
-        <div style="margin-top: 20px; text-align: center;">
-          <button id="btn-close-achievements" class="btn-secondary">Tutup</button>
-        </div>
-      </div>
-    </div>
-
-    <div id="toast-container"></div>
   </div>
 
-  <div id="game-footer">
-    <span>Berikan Star di GitHub</span>
-    <span class="dot">-</span>
-    <span>Zero Dependencies HTML5 &amp; Web Audio</span>
-    <span class="dot">-</span>
-    <a href="#" id="footer-menu-link">Menu Utama</a>
+  <div id="game-stage">
+    <div id="game-wrapper">
+
+      <div id="xp-bar-container">
+        <div id="xp-bar-fill"></div>
+      </div>
+
+      <div id="topbar">
+        <button id="btn-top-menu" class="btn-topbar hidden" title="Kembali ke Menu (ESC)">MENU</button>
+        <div class="topbar-spacer"></div>
+        <button id="btn-top-full" class="btn-topbar hidden" title="Fullscreen (F)">FULL</button>
+        <button id="btn-top-pause" class="btn-topbar hidden" title="Pause (P)">PAUSE</button>
+      </div>
+
+      <!-- HUD -->
+      <div id="hud" class="hidden">
+        <div class="hud-left">
+          <div class="hud-panel">
+            <span class="hud-label">P1 HP</span>
+            <div id="hp-bar-outer">
+              <div id="hp-bar-fill"></div>
+            </div>
+            <span id="hp-bar-text">100 / 100</span>
+          </div>
+          <div class="hud-panel mono" id="hud-level">Lv.1</div>
+          <div class="hud-panel hidden" id="hud-p2">
+            <span class="hud-label">P2 HP</span>
+            <div id="hp-bar-outer-p2">
+              <div id="hp-bar-fill-p2"></div>
+            </div>
+            <span id="hp-bar-text-p2">100 / 100</span>
+            <span class="hud-panel mono" id="hud-level-p2">P2 Lv.1</span>
+          </div>
+        </div>
+
+        <div class="hud-center">
+          <div class="hud-panel mono">
+            <span class="hud-label">TIME</span>
+            <span id="hud-timer">00:00</span>
+          </div>
+          <div class="hud-panel combo hidden" id="hud-combo">
+            <span class="hud-label">COMBO</span>
+            <span id="combo-count">0x</span>
+          </div>
+        </div>
+
+        <div class="hud-right">
+          <div class="hud-panel mono">
+            <span class="hud-label">KILL</span>
+            <span id="hud-kills">0</span>
+          </div>
+          <div id="hud-inventory"></div>
+        </div>
+      </div>
+
+      <canvas id="game-canvas"></canvas>
+
+      <!-- ============== MENU LANDSCAPE ============== -->
+
+      <!-- Login -->
+      <div id="menu-login" class="modal-backdrop">
+        <div class="menu-landscape">
+          <div class="menu-hero">
+            <p class="eyebrow">ARCADE SURVIVOR // DEV EDITION</p>
+            <h1 class="game-title">BUG HUNTER</h1>
+            <p class="game-title-sub">DEV SURVIVOR</p>
+            <p class="game-subtitle">Bantai ribuan Bug, 404 Error, Memory Leak, dan selamatkan production sebelum jam 5 sore.</p>
+            <div class="hero-badges">
+              <span class="hero-badge">33 WEAPONS</span>
+              <span class="hero-badge">9 CHARACTERS</span>
+              <span class="hero-badge">MERGE SYSTEM</span>
+              <span class="hero-badge">2 BOSSES</span>
+            </div>
+          </div>
+          <div class="menu-panel">
+            <h3 class="panel-heading">MASUK ARENA</h3>
+            <label class="login-label" for="input-nickname">NICKNAME DEVELOPER</label>
+            <input type="text" id="input-nickname" maxlength="14" placeholder="cth. codeSlinger99" autocomplete="off" />
+            <div class="login-meta" id="login-meta"></div>
+            <button id="btn-login-continue" class="btn-primary w-full">MASUK</button>
+            <button id="btn-open-settings-login" class="btn-ghost w-full">Pengaturan Suara</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Start Menu -->
+      <div id="menu-start" class="modal-backdrop hidden">
+        <div class="menu-landscape start-layout">
+          <aside class="menu-sidebar">
+            <p class="eyebrow" id="welcome-back-text">WELCOME BACK</p>
+            <h1 class="game-title" style="font-size:24px;">BUG HUNTER</h1>
+
+            <div class="sidebar-section">
+              <div class="sidebar-heading">MODE</div>
+              <div class="mode-grid" id="mode-toggle">
+                <button class="mode-card active" data-mode="solo">
+                  <div class="mode-icon">
+                    <svg viewBox="0 0 32 32" width="28" height="28" fill="currentColor">
+                      <circle cx="16" cy="10" r="5"/>
+                      <path d="M6 28 Q6 18 16 18 Q26 18 26 28 Z"/>
+                    </svg>
+                  </div>
+                  <div class="mode-info">
+                    <div class="mode-name">SOLO</div>
+                    <div class="mode-desc">1 Player</div>
+                  </div>
+                </button>
+                <button class="mode-card" data-mode="coop">
+                  <div class="mode-icon mode-icon-duo">
+                    <svg viewBox="0 0 40 32" width="34" height="28" fill="currentColor">
+                      <circle cx="12" cy="10" r="4.5"/>
+                      <path d="M3 28 Q3 19 12 19 Q21 19 21 28 Z"/>
+                      <circle cx="28" cy="10" r="4.5"/>
+                      <path d="M19 28 Q19 19 28 19 Q37 19 37 28 Z"/>
+                    </svg>
+                  </div>
+                  <div class="mode-info">
+                    <div class="mode-name">DUO</div>
+                    <div class="mode-desc">2 Players</div>
+                  </div>
+                </button>
+              </div>
+            </div>
+
+            <div class="sidebar-section">
+              <div class="sidebar-heading">KONTROL</div>
+              <div class="controls-list">
+                <div class="ctrl-row"><span class="ctrl-key">P1</span><span>WASD</span></div>
+                <div class="ctrl-row p2-ctrl hidden" id="p2-hint"><span class="ctrl-key">P2</span><span>Arrow Keys</span></div>
+                <div class="ctrl-row"><span class="ctrl-key">Pause</span><span>P / ESC</span></div>
+                <div class="ctrl-row"><span class="ctrl-key">Full</span><span>F / tombol FULL</span></div>
+              </div>
+            </div>
+
+            <div class="sidebar-actions">
+              <button id="btn-start-game" class="btn-primary w-full">LANJUT PILIH SENJATA</button>
+              <button id="btn-view-achievements" class="btn-secondary">Achievements</button>
+              <button id="btn-open-settings" class="btn-secondary">Pengaturan</button>
+              <button id="btn-change-nickname" class="btn-ghost w-full">Ganti Nickname</button>
+            </div>
+          </aside>
+
+          <main class="menu-main">
+            <div class="char-picker-header">
+              <div class="sidebar-heading">PILIH KARAKTER — PLAYER 1</div>
+              <span class="picker-hint">Klik untuk memilih</span>
+            </div>
+            <div id="char-cards" class="char-grid"></div>
+
+            <div id="p2-char-block" class="hidden" style="margin-top:18px;">
+              <div class="char-picker-header">
+                <div class="sidebar-heading" style="color:var(--accent-purple);">PILIH KARAKTER — PLAYER 2</div>
+              </div>
+              <div id="char-cards-p2" class="char-grid"></div>
+            </div>
+          </main>
+        </div>
+      </div>
+
+      <!-- Weapon Select -->
+      <div id="menu-weapon" class="modal-backdrop hidden">
+        <div class="menu-landscape weapon-layout">
+          <aside class="menu-sidebar">
+            <p class="eyebrow">LOADOUT</p>
+            <h1 class="game-title" style="font-size:22px;">PILIH SENJATA</h1>
+            <p class="game-subtitle" id="weapon-select-subtitle" style="font-size:12px; margin-bottom:12px;">
+              Pilih senjata pembuka. Senjata lain bisa didapat lewat level-up.
+            </p>
+
+            <div class="sidebar-section">
+              <div class="sidebar-heading">MODE BIDIK</div>
+              <div class="mode-toggle-compact" id="aim-toggle">
+                <button class="mode-btn active" data-aim="manual">MANUAL</button>
+                <button class="mode-btn" data-aim="auto">AUTO</button>
+              </div>
+            </div>
+
+            <div id="auto-priority-block" class="hidden sidebar-section">
+              <div class="sidebar-heading">PRIORITAS TARGET</div>
+              <div class="mode-toggle-compact" id="priority-toggle">
+                <button class="mode-btn active" data-priority="nearest">DEKAT</button>
+                <button class="mode-btn" data-priority="strongest">KUAT</button>
+                <button class="mode-btn" data-priority="weakest">LEMAH</button>
+                <button class="mode-btn" data-priority="farthest">JAUH</button>
+              </div>
+            </div>
+
+            <div class="sidebar-actions" style="margin-top:auto;">
+              <button id="btn-weapon-confirm" class="btn-primary w-full">MULAI RUN</button>
+              <button id="btn-weapon-back" class="btn-ghost w-full">Kembali</button>
+            </div>
+          </aside>
+
+          <main class="menu-main">
+            <div class="char-picker-header">
+              <div class="sidebar-heading">SENJATA AWAL — PLAYER 1</div>
+              <span class="picker-hint" id="weapon-count-label"></span>
+            </div>
+            <div id="weapon-cards" class="weapon-grid"></div>
+
+            <div id="p2-weapon-block" class="hidden" style="margin-top:14px;">
+              <div class="char-picker-header">
+                <div class="sidebar-heading" style="color:var(--accent-purple);">SENJATA AWAL — PLAYER 2</div>
+              </div>
+              <div id="weapon-cards-p2" class="weapon-grid"></div>
+            </div>
+          </main>
+        </div>
+      </div>
+
+      <!-- Settings Modal -->
+      <div id="modal-settings" class="modal-backdrop hidden">
+        <div class="modal-card" style="max-width:440px;">
+          <h2 class="modal-title">PENGATURAN SUARA</h2>
+          <p class="modal-subtitle">Atur volume, default normal.</p>
+
+          <div class="settings-row">
+            <label>Master</label>
+            <input type="range" id="vol-master" min="0" max="100" value="60" />
+            <span id="vol-master-val">60%</span>
+          </div>
+          <div class="settings-row">
+            <label>SFX</label>
+            <input type="range" id="vol-sfx" min="0" max="100" value="70" />
+            <span id="vol-sfx-val">70%</span>
+          </div>
+          <div class="settings-row">
+            <label>BGM</label>
+            <input type="range" id="vol-bgm" min="0" max="100" value="25" />
+            <span id="vol-bgm-val">25%</span>
+          </div>
+
+          <div class="menu-actions" style="margin-top: 18px;">
+            <button id="btn-vol-reset" class="btn-secondary">Reset Default</button>
+            <button id="btn-close-settings" class="btn-primary">Selesai</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Level Up -->
+      <div id="modal-levelup" class="modal-backdrop hidden">
+        <h2 class="modal-title">LEVEL UP</h2>
+        <p class="modal-subtitle">Pilih 1 upgrade untuk memperkuat stack arsitektur kodemu:</p>
+        <div id="levelup-cards"></div>
+        <p class="modal-hint">Tekan 1 / 2 / 3 atau klik kartu</p>
+      </div>
+
+      <!-- Pause -->
+      <div id="modal-pause" class="modal-backdrop hidden">
+        <div class="modal-card">
+          <h2 class="modal-title">GAME DI-PAUSE</h2>
+          <p class="modal-subtitle">Sedang break sejenak. Kopi aman.</p>
+          <div class="menu-actions" style="margin-top: 18px;">
+            <button id="btn-resume" class="btn-primary">Lanjutkan</button>
+            <button id="btn-restart-pause" class="btn-secondary">Restart Run</button>
+            <button id="btn-menu-from-pause" class="btn-ghost">Menu Utama</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Game Over -->
+      <div id="modal-gameover" class="modal-backdrop hidden">
+        <div class="gameover-box">
+          <div class="gameover-title">SERVER CRASHED</div>
+          <p style="color: var(--text-muted); margin-bottom: 20px;">Unhandled exception -- codebase overload.</p>
+
+          <div class="stats-grid">
+            <div class="stat-item"><div class="stat-label">Waktu</div><div class="stat-val" id="stat-time">00:00</div></div>
+            <div class="stat-item"><div class="stat-label">Bugs</div><div class="stat-val" id="stat-kills">0</div></div>
+            <div class="stat-item"><div class="stat-label">Level</div><div class="stat-val" id="stat-level">Lv.1</div></div>
+            <div class="stat-item"><div class="stat-label">Damage</div><div class="stat-val" id="stat-damage">0</div></div>
+            <div class="stat-item"><div class="stat-label">Max Combo</div><div class="stat-val" id="stat-combo">0x</div></div>
+            <div class="stat-item highscore-row"><div class="stat-label">High Score</div><div class="stat-val" id="stat-highscore">00:00 (0 bugs)</div></div>
+          </div>
+
+          <div class="menu-actions" style="justify-content: center;">
+            <button id="btn-restart" class="btn-primary">COBA LAGI</button>
+            <button id="btn-menu-from-gameover" class="btn-ghost">Menu Utama</button>
+            <button id="btn-share-score" class="btn-secondary">Share</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Achievements -->
+      <div id="modal-achievements" class="modal-backdrop hidden">
+        <div class="achievements-box">
+          <h2 class="modal-title">DEV ACHIEVEMENTS</h2>
+          <div id="achievements-list"></div>
+          <div style="margin-top: 20px; text-align: center;">
+            <button id="btn-close-achievements" class="btn-secondary">Tutup</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="toast-container"></div>
+    </div>
+
+    <div id="game-footer">
+      <span>Zero Dependencies HTML5</span>
+      <span class="dot">•</span>
+      <a href="#" id="footer-menu-link">Menu Utama</a>
+    </div>
   </div>
 
   <script src="audio.js"></script>

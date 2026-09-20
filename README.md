@@ -1,12 +1,12 @@
-# 🐛 BUG HUNTER: DEV SURVIVOR ⚡
+# BUG HUNTER: DEV SURVIVOR
 
-Arcade Survivor ala Vampire Survivors tapi versi developer! Bantai gerombolan **Bug 🐛, 404 Error, NullPointer ⚠️, Merge Conflict ❌, Memory Leak ☣️**, dan selamatkan diri dari **Friday 5PM Production Outage 🚨**!
+Arcade Survivor ala Vampire Survivors tapi versi developer! Bantai gerombolan **Bug, 404 Error, NullPointer, Merge Conflict, Memory Leak**, dan selamatkan diri dari **Friday 5PM Production Outage**!
 
-Live demo: `https://<username>.github.io/bug-hunter-survivor/` (aktifkan GitHub Pages 👇)
+Live demo: `https://<username>.github.io/bug-hunter-survivor/` (aktifkan GitHub Pages, lihat bawah)
 
 ![HTML5](https://img.shields.io/badge/HTML5-Canvas-orange) ![Zero Dependencies](https://img.shields.io/badge/dependencies-zero-brightgreen) ![WebAudio](https://img.shields.io/badge/audio-WebAudio%20procedural-blueviolet) ![Mobile Ready](https://img.shields.io/badge/mobile-touch%20joystick-blue)
 
-## 🎮 Mainkan Sekarang (tanpa install!)
+## Mainkan Sekarang (tanpa install!)
 
 1. Clone / buka folder `bug-hunter-survivor/`
 2. Jalankan server lokal apa saja, contoh:
@@ -16,88 +16,80 @@ npx serve .
 # atau
 python -m http.server 8000
 ```
-3. Buka `http://localhost:8000` → pilih karakter → **MULAI RUN BARU**
+3. Buka `http://localhost:8000` > isi nickname > pilih karakter + senjata pembuka > **MULAI**
 
 > Kenapa butuh server lokal? Karena game pakai ES Modules (`import/export`), tidak bisa dibuka via `file://` langsung.
 
-## ✨ Fitur Seru
+## Fitur
 
-- **3 Karakter Developer:** Junior Dev 👨‍💻, Senior 10x Dev 🧙‍♂️, DevOps Ninja 🥷 (masing-masing ada passive unik!)
-- **6 Senjata Auto-Attack yang bisa Evolusi (max Lv.5):**
-  - ⚡ Git Commit → `Git Push --force!`
-  - 🛡️ Linter Orbit → `Strict TypeScript Armor!`
-  - 🔥 Hotfix Laser → `Zero-Downtime Hyperbeam!`
-  - 🐳 Docker Deploy → `Kubernetes Cluster!`
-  - 🤖 AI Copilot Drone → `Autonomous GPT-5 Chain Lightning!`
-  - 🦆 Rubber Duck Bomb → `Mega Quack of Doom!`
-- **5 Passive Upgrade:** Espresso ☕, Mechanical Keyboard ⌨️, Energy Drink, Git Stash Armor, Clean Code Magnet 🧲
-- **Boss Fight:** Friday 5PM Outage (menit 5) & Legacy Spaghetti Codebase (menit 8)
-- **GitHub Green Tile XP System** — makin banyak commit, makin kuat!
-- **9 Achievements + High Score (localStorage)** + tombol Share ke X/Twitter
-- **100% Procedural Web Audio:** SFX tembakan, ledakan, level-up fanfare + BGM chiptune 8-bit, tanpa file MP3!
+- **4 Karakter Developer (vector sprite, tanpa emoji):** Junior Dev (JR), Senior 10x Dev (SR), DevOps Ninja (OPS), Prompt Engineer (AI, +25% XP gain)
+- **32 Senjata Total (6 lama + 26 baru!), semua bisa Evolusi max Lv.5:**
+  - Projectile: `Git Commit`, `API Endpoint`, `Cache Miss`, `Lambda Function`, `Webhook Ping`, `Hot Module Reload`, `Thread Pool`, `Regex Catastrophe`, `DDoS Barrage`, `Promise Chain`
+  - Rocket homing: `Crash Reporter` (splash), `Unit Test`, `Binary Search` (95+ dmg), `Load Balancer` (retarget)
+  - Orbit: `Linter Orbit`, `CDN Edge Node`, `Firewall Ring`, `Git Rebase` (chaos), `Code Review` (slow aura), `Git Blame` (mark + damage amp)
+  - Beam: `Hotfix Laser`, `Refactor Ray`, `SQL Injection`, `Debugger Breakpoint` (freeze)
+  - Mine: `Docker Deploy`, `StackOverflow Nuke`, `Kubernetes Cluster`, `Docker Compose`, `Async Await` (pull), `CI/CD Pipeline` (chain)
+  - Spesial: `AI Copilot Drone`, `Rubber Duck Bomb`
+- **5 Passive Upgrade:** Espresso, Mechanical Keyboard, Energy Drink, Git Stash Armor, Clean Code Magnet
+- **Co-op 2 Player lokal:** P1 = WASD/touch, P2 = Arrow keys. Kamera midpoint, XP/gem berbagi area, level-up antre per pemain, game over kalau dua-duanya down
+- **Aim System:** mode Manual (ikut arah gerak) atau Auto (prioritas Nearest / Strongest / Weakest / Farthest)
+- **Weapon Select + Nickname + Volume Settings** di menu utama
+- **Boss tiap 5 menit + SECTOR CLEAR:** boss bergantian (Friday Outage / Spaghetti) dan makin kuat tiap siklus (HP +90%, damage +15%). Bunuh boss = semua musuh jadi gem + hujan bonus gem (termasuk legendary) + 1 senjata/upgade gratis + musuh berikutnya HP x1.35, damage x1.15, XP x1.25, spawn makin cepat
+- **GitHub Green Tile XP System**, **9 Achievements + High Score (localStorage)** + tombol Share
+- **100% Procedural Web Audio:** SFX + BGM chiptune 8-bit, tanpa file MP3
 - **Mobile ready:** Virtual touch joystick otomatis muncul di HP
-- **Zero dependencies:** HTML + CSS + Vanilla JS doang, ringan & gampang di-fork!
+- **Zero dependencies:** HTML + CSS + Vanilla JS doang
 
-## 🕹️ Kontrol
+## Kontrol
 
-| Aksi | Keyboard | Mobile |
-|------|----------|--------|
-| Gerak | `WASD` / `Arrow Keys` | Virtual Joystick (sentuh & drag) |
-| Pause | `P` / `ESC` | - |
-| Pilih Upgrade | `1` / `2` / `3` atau Klik | Tap kartu |
+| Aksi | P1 | P2 (co-op) | Mobile |
+|------|----|------------|--------|
+| Gerak | `WASD` | `Arrow Keys` | Virtual Joystick |
+| Pause | `P` / `ESC` | - | - |
+| Fullscreen | `F` / tombol FULL | - | Otomatis saat mulai |
+| Pilih Upgrade | `1` / `2` / `3` atau Klik | - | Tap kartu |
 
-## 🚀 Deploy ke GitHub Pages (biar rame!)
+> ESC keluar dari fullscreen (aturan browser) — tekan `F` atau tombol FULL untuk masuk lagi.
 
-Supaya bisa dimainkan orang langsung dari profil GitHub kamu:
+## Deploy ke GitHub Pages (biar rame!)
 
 ```bash
-# 1. Buat repo baru di GitHub, misal: bug-hunter-survivor
-# 2. Di folder ini:
 git init
 git add .
-git commit -m "feat: bug hunter survivor game 🎮"
+git commit -m "feat: bug hunter survivor 32 weapons + coop"
 git branch -M main
 git remote add origin https://github.com/<username>/bug-hunter-survivor.git
 git push -u origin main
-
-# 3. Di GitHub: Settings → Pages → Deploy from branch → main / root → Save
-# 4. Tunggu 1-2 menit, game live di:
-# https://<username>.github.io/bug-hunter-survivor/
+# Settings > Pages > Deploy from branch > main / root > Save
+# Live di https://<username>.github.io/bug-hunter-survivor/
 ```
 
-Tips biar rame:
-- Pasang link demo di `About` repo + di bio GitHub
-- Tambahkan screenshot/GIF gameplay ke README ini
-- Share skor kamu pakai tombol **📢 Share ke X** di layar Game Over
-- Ajak orang PR: tambah musuh baru (`constants.js` → `ENEMY_TYPES`), senjata baru (`WEAPONS`), atau karakter baru (`CHARACTERS`)
-
-## 📁 Struktur File
+## Struktur File
 
 ```
 bug-hunter-survivor/
-├── index.html    # Layout HUD, menu, modal level-up / game over
+├── index.html    # HUD, login, char/weapon select, modal level-up / game over / settings
 ├── style.css     # Tema cyber dark GitHub-style
-├── constants.js  # Karakter, senjata, passive, musuh, achievement (EDIT DI SINI!)
-├── entities.js   # Player, Enemy, Projectile, Gem, Particle
-├── input.js      # Keyboard + touch joystick
-├── game.js       # Engine, spawner, combat, render loop
-├── ui.js         # HUD, menu karakter, modal, toast
-├── audio.js      # Synthesizer SFX + BGM chiptune (tanpa aset!)
+├── constants.js  # Karakter, 32 senjata, passive, musuh, achievement (EDIT DI SINI!)
+├── entities.js   # Player, Enemy, Projectile (homing/rocket), Gem, Particle
+├── input.js      # Keyboard P1/P2 + touch joystick
+├── game.js       # Engine, spawner, combat generik, co-op loop
+├── ui.js         # HUD, menu, weapon grid, toast
+├── audio.js      # Synthesizer SFX + BGM chiptune + volume mixer
 └── main.js       # Entry point
 ```
 
 Mau modding cepat? Cukup edit `constants.js` — semua damage, cooldown, HP musuh, dan deskripsi ada di sana.
 
-## 🤝 Kontribusi
+## Kontribusi
 
-PR & Issue sangat welcome! Ide gampang buat pemula:
+PR dan Issue welcome! Ide gampang buat pemula:
 - [ ] Musuh baru: `CORS Error`, `Infinite Loop`, `Zombie Process`
-- [ ] Senjata baru: `StackOverflow Nuke`, `Regex Catastrophe`
+- [ ] Senjata baru keluarga baru: `StackOverflow Nuke` sudah ada, coba `Regex Catastrophe` versi beam
 - [ ] Mode Hardcore / Endless leaderboard
-- [ ] Skin Octocat 🐙
 
-Jangan lupa kasih ⭐ kalau seru!
+Jangan lupa kasih Star kalau seru!
 
-## 📜 Lisensi
+## Lisensi
 
-MIT — bebas dipakai, dimodif, dan dishare. Dibuat dengan ☕ + 💻 untuk meramaikan GitHub Indonesia.
+MIT — bebas dipakai, dimodif, dan dishare.

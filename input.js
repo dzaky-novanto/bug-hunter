@@ -11,6 +11,7 @@ export class InputHandler {
     this.maxJoystickDistance = 50;
 
     this.onPauseToggle = null;
+    this.onFullscreenToggle = null;
 
     this.initKeyboard();
     this.initTouch();
@@ -22,6 +23,9 @@ export class InputHandler {
 
       if (e.code === 'KeyP' || e.code === 'Escape') {
         if (this.onPauseToggle) this.onPauseToggle();
+      }
+      if (e.code === 'KeyF') {
+        if (this.onFullscreenToggle) this.onFullscreenToggle();
       }
     });
 
@@ -85,19 +89,34 @@ export class InputHandler {
     window.addEventListener('touchcancel', endTouch);
   }
 
-  getMovementVector() {
-    // Touch takes priority if active
-    if (this.touchActive && (this.joystickVector.x !== 0 || this.joystickVector.y !== 0)) {
+  getMovementVector(playerNum = 1, coop = false) {
+    // P1 touch joystick always drives player 1
+    if (playerNum === 1 && this.touchActive && (this.joystickVector.x !== 0 || this.joystickVector.y !== 0)) {
       return this.joystickVector;
     }
 
     let x = 0;
     let y = 0;
 
-    if (this.keys['KeyW'] || this.keys['ArrowUp']) y -= 1;
-    if (this.keys['KeyS'] || this.keys['ArrowDown']) y += 1;
-    if (this.keys['KeyA'] || this.keys['ArrowLeft']) x -= 1;
-    if (this.keys['KeyD'] || this.keys['ArrowRight']) x += 1;
+    if (!coop) {
+      // Solo: WASD + arrows both drive the single player
+      if (this.keys['KeyW'] || this.keys['ArrowUp']) y -= 1;
+      if (this.keys['KeyS'] || this.keys['ArrowDown']) y += 1;
+      if (this.keys['KeyA'] || this.keys['ArrowLeft']) x -= 1;
+      if (this.keys['KeyD'] || this.keys['ArrowRight']) x += 1;
+    } else if (playerNum === 1) {
+      // Co-op P1: WASD
+      if (this.keys['KeyW']) y -= 1;
+      if (this.keys['KeyS']) y += 1;
+      if (this.keys['KeyA']) x -= 1;
+      if (this.keys['KeyD']) x += 1;
+    } else {
+      // Co-op P2: Arrow keys
+      if (this.keys['ArrowUp']) y -= 1;
+      if (this.keys['ArrowDown']) y += 1;
+      if (this.keys['ArrowLeft']) x -= 1;
+      if (this.keys['ArrowRight']) x += 1;
+    }
 
     if (x !== 0 && y !== 0) {
       const len = Math.hypot(x, y);
