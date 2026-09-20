@@ -2,7 +2,7 @@
 
 Arcade Survivor ala Vampire Survivors tapi versi developer! Bantai gerombolan **Bug, 404 Error, NullPointer, Merge Conflict, Memory Leak**, dan selamatkan diri dari **Friday 5PM Production Outage**!
 
-Live demo: `https://<username>.github.io/bug-hunter-survivor/` (aktifkan GitHub Pages, lihat bawah)
+Live demo: `https://dzaky-novanto.github.io/bug-hunter/` (aktifkan GitHub Pages, lihat bawah)
 
 ![HTML5](https://img.shields.io/badge/HTML5-Canvas-orange) ![Zero Dependencies](https://img.shields.io/badge/dependencies-zero-brightgreen) ![WebAudio](https://img.shields.io/badge/audio-WebAudio%20procedural-blueviolet) ![Mobile Ready](https://img.shields.io/badge/mobile-touch%20joystick-blue)
 
